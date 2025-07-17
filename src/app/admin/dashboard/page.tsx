@@ -30,6 +30,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useToast } from '@/hooks/use-toast';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function AdminDashboard() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -107,8 +108,8 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold font-headline">Dasbor Admin</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <h1 className="text-2xl sm:text-3xl font-bold font-headline">Dasbor Admin</h1>
         <Button asChild>
           <Link href="/admin/posts/new">
             <PlusCircle className="mr-2 h-4 w-4" />
@@ -117,69 +118,73 @@ export default function AdminDashboard() {
         </Button>
       </div>
 
-      <div className="bg-card rounded-lg shadow-md">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[50%]">Judul</TableHead>
-              <TableHead>Penulis</TableHead>
-              <TableHead>Tanggal</TableHead>
-              <TableHead>Tags</TableHead>
-              <TableHead className="text-right">Aksi</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {posts.map((post) => (
-              <TableRow key={post.id}>
-                <TableCell className="font-medium">{post.title}</TableCell>
-                <TableCell>{post.author}</TableCell>
-                <TableCell>{post.date as string}</TableCell>
-                <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                        {post.tags.map(tag => <Badge key={tag} variant="secondary" className="capitalize">{tag}</Badge>)}
-                    </div>
-                </TableCell>
-                <TableCell className="text-right">
-                  <div className="flex justify-end gap-2">
-                    <Button variant="outline" size="icon" asChild>
-                      <Link href={`/admin/posts/edit/${post.id}`}>
-                        <Pencil className="h-4 w-4" />
-                        <span className="sr-only">Edit</span>
-                      </Link>
-                    </Button>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="destructive" size="icon">
-                          <Trash2 className="h-4 w-4" />
-                          <span className="sr-only">Hapus</span>
+      <Card>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="min-w-[250px] w-[40%]">Judul</TableHead>
+                  <TableHead>Penulis</TableHead>
+                  <TableHead>Tanggal</TableHead>
+                  <TableHead>Tags</TableHead>
+                  <TableHead className="text-right">Aksi</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {posts.map((post) => (
+                  <TableRow key={post.id}>
+                    <TableCell className="font-medium">{post.title}</TableCell>
+                    <TableCell>{post.author}</TableCell>
+                    <TableCell>{post.date as string}</TableCell>
+                    <TableCell>
+                        <div className="flex flex-wrap gap-1">
+                            {post.tags.map(tag => <Badge key={tag} variant="secondary" className="capitalize">{tag}</Badge>)}
+                        </div>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <Button variant="outline" size="icon" asChild>
+                          <Link href={`/admin/posts/edit/${post.id}`}>
+                            <Pencil className="h-4 w-4" />
+                            <span className="sr-only">Edit</span>
+                          </Link>
                         </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Apakah Anda yakin?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Tindakan ini tidak dapat dibatalkan. Ini akan menghapus postingan secara permanen.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Batal</AlertDialogCancel>
-                          <AlertDialogAction 
-                            onClick={() => handleDeletePost(post.id, post.title)}
-                            disabled={deleting}
-                          >
-                            {deleting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                            Ya, Hapus
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="destructive" size="icon">
+                              <Trash2 className="h-4 w-4" />
+                              <span className="sr-only">Hapus</span>
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Apakah Anda yakin?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Tindakan ini tidak dapat dibatalkan. Ini akan menghapus postingan secara permanen.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Batal</AlertDialogCancel>
+                              <AlertDialogAction 
+                                onClick={() => handleDeletePost(post.id, post.title)}
+                                disabled={deleting}
+                              >
+                                {deleting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                                Ya, Hapus
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
