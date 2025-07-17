@@ -31,14 +31,21 @@ export default function AboutPage() {
         <h2 className="text-3xl font-bold font-headline mb-8 text-center">Dosen Pembimbing Lapangan</h2>
         <div className="flex justify-center flex-wrap gap-8">
           {dpls.map((dpl) => (
-            <Card key={dpl.name} className="w-full max-w-sm text-center">
-              <CardContent className="pt-6 flex flex-col items-center">
-                <Avatar className="w-28 h-28 mb-4 border-4 border-primary">
-                  <AvatarImage src={dpl.imageUrl} alt={dpl.name} data-ai-hint={dpl.imageHint} />
-                  <AvatarFallback>{dpl.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <h3 className="text-xl font-bold font-headline">{dpl.name}</h3>
-                <p className="text-muted-foreground">{dpl.title}</p>
+            <Card key={dpl.name} className="w-full max-w-md text-center flex flex-col">
+              <CardHeader className="flex-shrink-0">
+                  <div className="flex flex-col items-center">
+                    <Avatar className="w-24 h-24 mb-4 border-4 border-primary">
+                      <AvatarImage src={dpl.imageUrl} alt={dpl.name} data-ai-hint={dpl.imageHint} />
+                      <AvatarFallback>{dpl.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <CardTitle className="text-xl font-bold font-headline">{dpl.name}</CardTitle>
+                    <p className="text-muted-foreground">{dpl.title}</p>
+                  </div>
+              </CardHeader>
+              <CardContent className="flex-grow flex items-center">
+                <p className="text-sm text-center italic text-muted-foreground/80">
+                  &quot;{dpl.description}&quot;
+                </p>
               </CardContent>
             </Card>
           ))}

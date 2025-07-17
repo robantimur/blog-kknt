@@ -6,17 +6,19 @@ import type { Post, TeamMember, DPL } from "./types";
 export const dpls: DPL[] = [
   {
     name: "Dr. Ir. Ita Widowati, DEA",
-    title: "Dosen Pembimbing Lapangan 1",
+    title: "Ilmu Kelautan (FPIK)",
+    description: "SDG 12 – Responsible Consumption and Production: Kajian dampak ekologis pemanfaatan limbah kerang, serta pelatihan konservasi lingkungan berbasis masyarakat pesisir.",
     imageUrl:
       "https://kelautan.fpik.undip.ac.id/wp-content/uploads/2024/08/Ita-Widowati.jpg",
-    imageHint: "Dr. Ir. Ita Widowati, DEA",
+    imageHint: "woman portrait",
   },
   {
     name: "dr. Rizky Rahmayanti, Sp.PD",
-    title: "Dosen Pembimbing Lapangan 2",
+    title: "Studi Ilmu Penyakit Dalam (FK)",
+    description: "SDG 3 – Good Health and Well-Being: Edukasi kesehatan lingkungan dan gizi masyarakat, serta deteksi dini penyakit yang mungkin terkait sanitasi dan limbah.",
     imageUrl:
       "https://dk4fkkwa4o9l0.cloudfront.net/production/uploads/doctor/avatar/3202/ia__31_.png",
-    imageHint: "dr. Rizky Rahmayanti, Sp.PD",
+    imageHint: "woman portrait",
   },
 ];
 

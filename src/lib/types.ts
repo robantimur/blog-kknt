@@ -11,7 +11,6 @@ export interface Post {
   image_url: string;
   image_hint?: string;
   author: string;
-  author_image_url: string;
   date: string; // Formatted date string for display
   tags: string[];
 }
@@ -28,6 +27,7 @@ export interface TeamMember {
 export interface DPL {
   name: string;
   title: string;
+  description: string;
   imageUrl: string;
   imageHint?: string;
 }
