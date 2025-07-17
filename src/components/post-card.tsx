@@ -23,24 +23,24 @@ export default function PostCard({ post }: PostCardProps) {
             data-ai-hint={post.image_hint}
           />
         </div>
-        <div className="p-4 flex flex-col flex-grow">
-          <CardTitle className="text-lg md:text-xl font-bold font-headline leading-snug group-hover:text-primary transition-colors">
+        <div className="p-3 flex flex-col flex-grow">
+          <CardTitle className="text-base md:text-lg font-bold font-headline leading-snug group-hover:text-primary transition-colors">
             {post.title}
           </CardTitle>
-          <p className="mt-2 text-muted-foreground text-sm line-clamp-3 flex-grow">
+          <p className="mt-1 text-muted-foreground text-xs md:text-sm line-clamp-2 flex-grow">
             {post.excerpt}
           </p>
-          <div className="mt-4">
-              <div className="flex flex-wrap gap-2 mb-4">
-              {post.tags.slice(0, 3).map((tag) => (
-                <Badge key={tag} variant="secondary" className="capitalize">
+          <div className="mt-3">
+              <div className="flex flex-wrap gap-1 mb-3">
+              {post.tags.slice(0, 2).map((tag) => (
+                <Badge key={tag} variant="secondary" className="capitalize text-xs">
                   {tag.replace(/-/g, ' ')}
                 </Badge>
               ))}
             </div>
-             <div className="flex items-center text-sm text-primary font-semibold">
+             <div className="flex items-center text-xs text-primary font-semibold">
               Baca Selengkapnya
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              <ArrowRight className="ml-1 h-3 w-3 transition-transform duration-300 group-hover:translate-x-1" />
             </div>
           </div>
         </div>
