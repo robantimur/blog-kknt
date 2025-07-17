@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Calendar } from 'lucide-react';
-import { createClient } from '@/lib/supabase/server';
+import { createClient as createServerClient } from '@/lib/supabase/server';
+import { createClient as createStaticClient } from '@/lib/supabase/static';
 import type { Post } from '@/lib/types';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
@@ -17,7 +18,7 @@ type PostPageProps = {
 };
 
 async function getPostBySlug(slug: string): Promise<Post | null> {
-    const supabase = createClient();
+    const supabase = createServerClient();
     const { data, error } = await supabase
         .from('posts')
         .select('*')
@@ -36,7 +37,7 @@ async function getPostBySlug(slug: string): Promise<Post | null> {
 }
 
 export async function generateStaticParams() {
-  const supabase = createClient();
+  const supabase = createStaticClient();
   const { data: posts, error } = await supabase.from('posts').select('slug');
   
   if (error) {

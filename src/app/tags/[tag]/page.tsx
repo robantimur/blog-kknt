@@ -2,7 +2,8 @@
 import PostCard from '@/components/post-card';
 import { notFound } from 'next/navigation';
 import { Tag } from 'lucide-react';
-import { createClient } from '@/lib/supabase/server';
+import { createClient as createServerClient } from '@/lib/supabase/server';
+import { createClient as createStaticClient } from '@/lib/supabase/static';
 import type { Post } from '@/lib/types';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
@@ -14,7 +15,7 @@ type TagPageProps = {
 };
 
 async function getPostsByTag(tag: string) {
-  const supabase = createClient();
+  const supabase = createServerClient();
   const { data: posts, error } = await supabase
     .from('posts')
     .select('*')
@@ -35,7 +36,7 @@ async function getPostsByTag(tag: string) {
 }
 
 export async function generateStaticParams() {
-  const supabase = createClient();
+  const supabase = createStaticClient();
   const { data: posts, error } = await supabase.from('posts').select('tags');
 
   if (error) {
