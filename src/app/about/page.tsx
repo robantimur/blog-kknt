@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -55,7 +56,8 @@ export default function AboutPage() {
                   <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <h3 className="text-lg font-semibold font-headline">{member.name}</h3>
-                <p className="text-muted-foreground text-sm">{member.major}</p>
+                <p className="text-primary font-medium text-sm">{member.role}</p>
+                <p className="text-muted-foreground text-sm mt-1">{member.major}</p>
               </CardContent>
             </Card>
           ))}

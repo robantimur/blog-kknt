@@ -20,6 +20,7 @@ export interface TeamMember {
   id: string;
   name: string;
   major: string;
+  role: string;
   imageUrl: string;
   imageHint?: string;
 }
