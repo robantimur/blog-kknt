@@ -22,6 +22,18 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'kelautan.fpik.undip.ac.id',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'dk4fkkwa4o9l0.cloudfront.net',
+        port: '',
+        pathname: '/**',
+      }
     ],
   },
 };

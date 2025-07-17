@@ -1,4 +1,3 @@
-
 import PostCard from '@/components/post-card';
 import { notFound } from 'next/navigation';
 import { Tag } from 'lucide-react';
@@ -7,12 +6,22 @@ import { createClient as createStaticClient } from '@/lib/supabase/static';
 import type { Post } from '@/lib/types';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
+import type { Metadata } from 'next';
 
 type TagPageProps = {
   params: {
     tag: string;
   };
 };
+
+export async function generateMetadata({ params }: TagPageProps): Promise<Metadata> {
+  const tagName = decodeURIComponent(params.tag).replace(/-/g, ' ');
+  return {
+    title: `Postingan tentang #${tagName} | Roban Berkarya`,
+    description: `Jelajahi semua postingan yang ditandai dengan tag "${tagName}" di website KKN Roban Berkarya.`,
+  };
+}
+
 
 async function getPostsByTag(tag: string) {
   const supabase = createServerClient();

@@ -11,12 +11,50 @@ import { id } from 'date-fns/locale';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
+import type { Metadata, ResolvingMetadata } from 'next';
 
 type PostPageProps = {
   params: {
     slug: string;
   };
 };
+
+// Function to generate dynamic metadata
+export async function generateMetadata(
+  { params }: PostPageProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const post = await getPostBySlug(params.slug);
+
+  if (!post) {
+    return {
+      title: 'Postingan Tidak Ditemukan',
+      description: 'Halaman yang Anda cari tidak ada.',
+    };
+  }
+  
+  const previousImages = (await parent).openGraph?.images || []
+
+  return {
+    title: `${post.title} | Roban Berkarya`,
+    description: post.excerpt,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      url: `/posts/${post.slug}`,
+      images: [
+        {
+          url: post.image_url,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+        ...previousImages,
+      ],
+    },
+  };
+}
+
 
 async function getPostBySlug(slug: string): Promise<Post | null> {
     const supabase = createServerClient();
