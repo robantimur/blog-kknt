@@ -1,10 +1,15 @@
-import { posts } from '@/lib/data';
+
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Calendar, User } from 'lucide-react';
+import { Calendar } from 'lucide-react';
+import { collection, query, where, getDocs, limit } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import type { Post } from '@/lib/types';
+import { format } from 'date-fns';
+import { id } from 'date-fns/locale';
 
 type PostPageProps = {
   params: {
@@ -12,18 +17,42 @@ type PostPageProps = {
   };
 };
 
+async function getPostBySlug(slug: string): Promise<Post | null> {
+    const postsRef = collection(db, 'posts');
+    const q = query(postsRef, where("slug", "==", slug), limit(1));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+        return null;
+    }
+
+    const doc = querySnapshot.docs[0];
+    const data = doc.data();
+    return {
+        id: doc.id,
+        ...data,
+        date: format(data.createdAt.toDate(), 'd LLLL yyyy', { locale: id }),
+    } as Post;
+}
+
 export async function generateStaticParams() {
-  return posts.map((post) => ({
-    slug: post.slug,
+  const postsCol = collection(db, 'posts');
+  const postSnapshot = await getDocs(postsCol);
+  return postSnapshot.docs.map((doc) => ({
+    slug: doc.data().slug,
   }));
 }
 
-export default function PostPage({ params }: PostPageProps) {
-  const post = posts.find((p) => p.slug === params.slug);
+export default async function PostPage({ params }: PostPageProps) {
+  const post = await getPostBySlug(params.slug);
 
   if (!post) {
     notFound();
   }
+
+  const postDate = typeof post.date === 'string' ? post.date : format(post.date.toDate(), 'd LLLL yyyy', { locale: id });
+  const dateTime = typeof post.date === 'string' ? new Date(post.date).toISOString() : post.date.toDate().toISOString();
+
 
   return (
     <article className="max-w-4xl mx-auto bg-card p-6 sm:p-8 rounded-xl shadow-lg">
@@ -39,7 +68,7 @@ export default function PostPage({ params }: PostPageProps) {
           </div>
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4" />
-            <time dateTime={post.date}>{post.date}</time>
+            <time dateTime={dateTime}>{postDate}</time>
           </div>
         </div>
       </header>

@@ -1,3 +1,6 @@
+
+import type { Timestamp } from 'firebase/firestore';
+
 export interface Post {
   id: string;
   slug: string;
@@ -8,8 +11,10 @@ export interface Post {
   imageHint?: string;
   author: string;
   authorImageUrl: string;
-  date: string;
+  // Use string for form and client-side, but Timestamp for Firestore
+  date: string | Timestamp; 
   tags: string[];
+  createdAt: Timestamp;
 }
 
 export interface TeamMember {

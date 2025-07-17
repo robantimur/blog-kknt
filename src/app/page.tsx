@@ -1,7 +1,30 @@
-import { posts } from '@/lib/data';
-import PostCard from '@/components/post-card';
 
-export default function Home() {
+import { collection, getDocs, orderBy, query, limit } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import type { Post } from '@/lib/types';
+import PostCard from '@/components/post-card';
+import { format } from 'date-fns';
+import { id } from 'date-fns/locale';
+
+
+async function getPosts() {
+  const postsCol = collection(db, 'posts');
+  const q = query(postsCol, orderBy('createdAt', 'desc'), limit(6));
+  const postSnapshot = await getDocs(q);
+  const postList = postSnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        date: format(data.createdAt.toDate(), 'd LLLL yyyy', { locale: id }),
+      } as Post;
+  });
+  return postList;
+}
+
+export default async function Home() {
+  const posts = await getPosts();
+
   return (
     <div className="space-y-12">
       <section className="text-center">
@@ -13,11 +36,15 @@ export default function Home() {
 
       <section>
         <h2 className="text-3xl font-bold font-headline mb-8 text-center">Postingan Terbaru</h2>
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
-          ))}
-        </div>
+        {posts.length > 0 ? (
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {posts.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-muted-foreground">Belum ada postingan.</p>
+        )}
       </section>
     </div>
   );

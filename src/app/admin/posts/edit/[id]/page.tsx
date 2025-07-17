@@ -1,6 +1,13 @@
+
+'use client';
+
 import PostForm from '@/components/post-form';
-import { posts } from '@/lib/data';
-import { notFound } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
+import { db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import type { Post } from '@/lib/types';
+import { Loader2 } from 'lucide-react';
 
 type EditPostPageProps = {
   params: {
@@ -9,10 +16,42 @@ type EditPostPageProps = {
 };
 
 export default function EditPostPage({ params }: EditPostPageProps) {
-  const post = posts.find((p) => p.id === params.id);
+  const [post, setPost] = useState<Post | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
-  if (!post) {
-    notFound();
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const postDoc = await getDoc(doc(db, "posts", params.id));
+        if (postDoc.exists()) {
+          const data = postDoc.data();
+          setPost({ id: postDoc.id, ...data } as Post);
+        } else {
+          setError("Postingan tidak ditemukan.");
+          notFound();
+        }
+      } catch (err) {
+        console.error(err);
+        setError("Gagal memuat postingan.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPost();
+  }, [params.id, router]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+  
+  if (error) {
+    return <div className="text-center text-destructive">{error}</div>
   }
 
   return (
@@ -22,7 +61,7 @@ export default function EditPostPage({ params }: EditPostPageProps) {
         <p className="mt-2 text-muted-foreground">Perbarui informasi pada postingan Anda.</p>
       </div>
       <div className="bg-card p-8 rounded-xl shadow-md">
-        <PostForm post={post} />
+        {post && <PostForm post={post} />}
       </div>
     </div>
   );

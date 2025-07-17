@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -10,11 +11,83 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { posts } from '@/lib/data';
-import { PlusCircle, Pencil, Trash2 } from 'lucide-react';
+import { PlusCircle, Pencil, Trash2, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { db } from '@/lib/firebase';
+import { collection, query, orderBy, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import type { Post } from '@/lib/types';
+import { format } from 'date-fns';
+import { id } from 'date-fns/locale';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { useToast } from '@/hooks/use-toast';
 
 export default function AdminDashboard() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const postsData = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          date: data.createdAt.toDate().toLocaleDateString('id-ID', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          }),
+        } as Post;
+      });
+      setPosts(postsData);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleDeletePost = async (postId: string, postTitle: string) => {
+    setDeleting(true);
+    try {
+      await deleteDoc(doc(db, "posts", postId));
+      toast({
+        title: 'Sukses',
+        description: `Postingan "${postTitle}" telah dihapus.`,
+      });
+    } catch (error) {
+      console.error("Error deleting post: ", error);
+      toast({
+        variant: 'destructive',
+        title: 'Gagal Menghapus',
+        description: 'Terjadi kesalahan saat menghapus postingan.',
+      });
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
@@ -43,7 +116,7 @@ export default function AdminDashboard() {
               <TableRow key={post.id}>
                 <TableCell className="font-medium">{post.title}</TableCell>
                 <TableCell>{post.author}</TableCell>
-                <TableCell>{post.date}</TableCell>
+                <TableCell>{typeof post.date === 'string' ? post.date : format(post.date.toDate(), 'd LLLL yyyy', { locale: id })}</TableCell>
                 <TableCell>
                     <div className="flex flex-wrap gap-1">
                         {post.tags.map(tag => <Badge key={tag} variant="secondary" className="capitalize">{tag}</Badge>)}
@@ -57,10 +130,32 @@ export default function AdminDashboard() {
                         <span className="sr-only">Edit</span>
                       </Link>
                     </Button>
-                    <Button variant="destructive" size="icon" onClick={() => alert(`Simulasi hapus post: ${post.title}`)}>
-                      <Trash2 className="h-4 w-4" />
-                      <span className="sr-only">Hapus</span>
-                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="destructive" size="icon">
+                          <Trash2 className="h-4 w-4" />
+                          <span className="sr-only">Hapus</span>
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Apakah Anda yakin?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Tindakan ini tidak dapat dibatalkan. Ini akan menghapus postingan secara permanen.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Batal</AlertDialogCancel>
+                          <AlertDialogAction 
+                            onClick={() => handleDeletePost(post.id, post.title)}
+                            disabled={deleting}
+                          >
+                            {deleting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                            Ya, Hapus
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
                 </TableCell>
               </TableRow>
