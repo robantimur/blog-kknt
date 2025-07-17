@@ -23,9 +23,13 @@ import { createClient } from '@/lib/supabase/client';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const postSchema = z.object({
   title: z.string().min(5, { message: 'Judul minimal 5 karakter.' }),
+  author: z.string().min(3, { message: 'Nama penulis minimal 3 karakter.' }),
   excerpt: z.string().min(10, { message: 'Kutipan minimal 10 karakter.' }).max(200, { message: 'Kutipan maksimal 200 karakter.' }),
   image: z.any().optional(),
   content: z.string().min(50, { message: 'Konten minimal 50 karakter.' }),
@@ -49,6 +53,7 @@ export default function PostForm({ post }: PostFormProps) {
     resolver: zodResolver(postSchema),
     defaultValues: {
       title: post?.title || '',
+      author: post?.author || '',
       excerpt: post?.excerpt || '',
       content: post?.content || '',
       tags: post?.tags.join(', ') || '',
@@ -56,6 +61,7 @@ export default function PostForm({ post }: PostFormProps) {
   });
   
   const imageRef = form.register("image");
+  const contentValue = form.watch('content');
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -109,8 +115,8 @@ export default function PostForm({ post }: PostFormProps) {
         content: values.content,
         tags: values.tags.split(',').map(tag => tag.trim().toLowerCase()),
         image_url: imageUrl,
-        author: user.user_metadata?.full_name || user.email || 'Admin',
-        author_image_url: user.user_metadata?.avatar_url || `https://placehold.co/100x100.png`,
+        author: values.author,
+        author_image_url: post?.author_image_url || `https://placehold.co/100x100.png`,
       };
 
       if (post) {
@@ -156,6 +162,21 @@ export default function PostForm({ post }: PostFormProps) {
               <FormControl>
                 <Input placeholder="Judul yang menarik..." {...field} disabled={isSubmitting} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="author"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-lg">Nama Penulis</FormLabel>
+              <FormControl>
+                <Input placeholder="John Doe" {...field} disabled={isSubmitting} />
+              </FormControl>
+              <FormDescription>Nama ini akan ditampilkan sebagai penulis artikel.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -210,27 +231,42 @@ export default function PostForm({ post }: PostFormProps) {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="content"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-lg">Konten Lengkap</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Tulis cerita lengkap Anda di sini... Anda bisa menggunakan tag HTML sederhana seperti <h2> atau <p>."
-                  className="min-h-[250px]"
-                  {...field}
-                  disabled={isSubmitting}
-                />
-              </FormControl>
-               <FormDescription>
-                Konten lengkap yang akan ditampilkan di halaman detail postingan.
-              </FormDescription>
+              <FormLabel className="text-lg">Konten Lengkap (Markdown)</FormLabel>
+              <Tabs defaultValue="edit" className="w-full">
+                <TabsList>
+                  <TabsTrigger value="edit">Tulis</TabsTrigger>
+                  <TabsTrigger value="preview">Pratinjau</TabsTrigger>
+                </TabsList>
+                <TabsContent value="edit">
+                  <FormControl>
+                    <Textarea
+                      placeholder="Tulis cerita lengkap Anda di sini menggunakan format Markdown..."
+                      className="min-h-[300px] font-mono"
+                      {...field}
+                      disabled={isSubmitting}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Gunakan sintaks Markdown. Pratinjau akan ditampilkan di tab sebelahnya.
+                  </FormDescription>
+                </TabsContent>
+                <TabsContent value="preview">
+                  <div className="prose dark:prose-invert min-h-[300px] w-full max-w-none rounded-md border p-4">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{contentValue || "Pratinjau akan muncul di sini..."}</ReactMarkdown>
+                  </div>
+                </TabsContent>
+              </Tabs>
               <FormMessage />
             </FormItem>
           )}
         />
+
          <FormField
           control={form.control}
           name="tags"

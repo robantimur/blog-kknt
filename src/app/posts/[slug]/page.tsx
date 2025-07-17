@@ -10,6 +10,9 @@ import { createClient as createStaticClient } from '@/lib/supabase/static';
 import type { Post } from '@/lib/types';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 
 type PostPageProps = {
   params: {
@@ -81,14 +84,20 @@ export default async function PostPage({ params }: PostPageProps) {
 
       {post.image_url && (
         <div className="relative aspect-[16/9] w-full mb-8 rounded-lg overflow-hidden">
-          <Image src={post.image_url} alt={post.title} fill className="object-cover" data-ai-hint={post.image_hint} />
+          <Image src={post.image_url} alt={post.title} fill className="object-cover" data-ai-hint={post.image_hint} priority />
         </div>
       )}
 
       <div
         className="prose prose-lg dark:prose-invert max-w-none break-words [&>h2]:font-headline [&>h3]:font-headline"
-        dangerouslySetInnerHTML={{ __html: post.content }}
-      />
+      >
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeRaw]}
+        >
+          {post.content}
+        </ReactMarkdown>
+      </div>
       
       <footer className="mt-12 pt-8 border-t">
           <h3 className="text-lg font-semibold mb-4">Tags</h3>

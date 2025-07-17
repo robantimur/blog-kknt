@@ -7,7 +7,7 @@ export interface Post {
   slug: string;
   title: string;
   excerpt: string;
-  content: string;
+  content: string; // Markdown content
   image_url: string;
   image_hint?: string;
   author: string;
