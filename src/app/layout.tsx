@@ -15,7 +15,12 @@ export const metadata: Metadata = {
   title: 'Roban Berkarya',
   description: 'Website KKN Tematik Tim 1 Kelompok 5 di Desa Roban Barat.',
   icons: {
-    icon: '/favicon.ico',
+    icon: '/favicon.ico', // Ganti dengan path favicon baru jika berbeda
+    // Opsi tambahan:
+    // icon: '/favicon.png',
+    // icon: '/favicon.svg',
+    // apple: '/apple-icon.png', // untuk iOS
+    // shortcut: '/favicon.ico'
   }
 };
 
