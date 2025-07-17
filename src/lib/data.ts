@@ -49,6 +49,15 @@ export const teamMembers: TeamMember[] = [
     imageHint: "student portrait",
   },
   {
+    id: "7",
+    name: "Rezqilla Ashya",
+    major: "Informasi dan Hubungan Masyarakat",
+    role: "Sekretaris",
+    imageUrl:
+      "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/rezqilla%20ashya.png",
+    imageHint: "student portrait",
+  },
+  {
     id: "6",
     name: "Nurul Amirah",
     major: "Kedokteran Gigi",
@@ -85,15 +94,6 @@ export const teamMembers: TeamMember[] = [
     imageHint: "student portrait",
   },
   {
-    id: "7",
-    name: "Rezqilla Ashya",
-    major: "Informasi dan Hubungan Masyarakat",
-    role: "Divisi Humas",
-    imageUrl:
-      "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/rezqilla%20ashya.png",
-    imageHint: "student portrait",
-  },
-  {
     id: "8",
     name: "Gema Rigel Nursyabana Wangi",
     major: "Teknik Geologi",
@@ -103,5 +103,6 @@ export const teamMembers: TeamMember[] = [
     imageHint: "student portrait",
   },
 ];
+
 
 export const posts: Post[] = []; // This is now an empty array. Data comes from Firestore.
