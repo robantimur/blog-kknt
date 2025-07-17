@@ -1,12 +1,8 @@
 
-'use client';
-
 import PostForm from '@/components/post-form';
 import { notFound } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
-import { useEffect, useState } from 'react';
+import { createClient } from '@/lib/supabase/server';
 import type { Post } from '@/lib/types';
-import { Loader2 } from 'lucide-react';
 
 type EditPostPageProps = {
   params: {
@@ -14,49 +10,17 @@ type EditPostPageProps = {
   };
 };
 
-export default function EditPostPage({ params }: EditPostPageProps) {
-  const [post, setPost] = useState<Post | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export default async function EditPostPage({ params }: EditPostPageProps) {
   const supabase = createClient();
-
-  useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('posts')
-          .select('*')
-          .eq('id', params.id)
-          .single();
-
-        if (error) throw error;
-
-        if (data) {
-          setPost(data as Post);
-        } else {
-          setError("Postingan tidak ditemukan.");
-          notFound();
-        }
-      } catch (err: any) {
-        console.error(err);
-        setError(err.message || "Gagal memuat postingan.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPost();
-  }, [params.id, supabase]);
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
   
-  if (error) {
-    return <div className="text-center text-destructive">{error}</div>
+  const { data: post, error } = await supabase
+    .from('posts')
+    .select('*')
+    .eq('id', params.id)
+    .single();
+
+  if (error || !post) {
+    notFound();
   }
 
   return (
@@ -66,7 +30,7 @@ export default function EditPostPage({ params }: EditPostPageProps) {
         <p className="mt-2 text-muted-foreground">Perbarui informasi pada postingan Anda.</p>
       </div>
       <div className="bg-card p-4 sm:p-8 rounded-xl shadow-md">
-        {post && <PostForm post={post} />}
+        <PostForm post={post as Post} />
       </div>
     </div>
   );
