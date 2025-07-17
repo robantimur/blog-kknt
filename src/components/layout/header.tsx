@@ -20,6 +20,7 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { useEffect, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const navLinks = [
   { href: '/', label: 'Home', icon: Home },
@@ -40,7 +41,6 @@ export default function Header() {
       setLoading(false);
     });
 
-    // Also fetch the initial session
     const getInitialUser = async () => {
         const { data: { user } } = await supabase.auth.getUser();
         setUser(user);
@@ -70,6 +70,72 @@ export default function Header() {
     }
   };
 
+  const AuthButtons = () => {
+    if (loading) {
+      return <Skeleton className="h-9 w-24" />;
+    }
+    if (user) {
+      return (
+        <>
+          <Button variant="ghost" asChild>
+            <Link href="/admin/dashboard">
+              <LayoutDashboard className="mr-2 h-4 w-4" />
+              Dasbor
+            </Link>
+          </Button>
+          <Button variant="outline" onClick={handleLogout}>
+            <LogOut className="mr-2 h-4 w-4" />
+            Logout
+          </Button>
+        </>
+      );
+    }
+    return (
+      <Button variant="outline" asChild>
+        <Link href="/admin/login">
+          <LogIn className="mr-2 h-4 w-4" />
+          Admin
+        </Link>
+      </Button>
+    );
+  };
+  
+  const MobileAuthButtons = () => {
+    if (loading) {
+        return <Skeleton className="h-9 w-full" />;
+    }
+    if (user) {
+        return (
+            <>
+                <SheetClose asChild>
+                    <Button variant="secondary" asChild className="w-full">
+                        <Link href="/admin/dashboard">
+                            <LayoutDashboard className="mr-2 h-4 w-4" />
+                            Dasbor Admin
+                        </Link>
+                    </Button>
+                </SheetClose>
+                <SheetClose asChild>
+                    <Button variant="outline" className="w-full" onClick={handleLogout}>
+                        <LogOut className="mr-2 h-4 w-4" />
+                        Logout
+                    </Button>
+                </SheetClose>
+            </>
+        );
+    }
+    return (
+        <SheetClose asChild>
+            <Button variant="outline" asChild className="w-full">
+                <Link href="/admin/login">
+                    <LogIn className="mr-2 h-4 w-4" />
+                    Admin Login
+                </Link>
+            </Button>
+        </SheetClose>
+    );
+};
+
   return (
     <header className="bg-card shadow-sm sticky top-0 z-40">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -96,29 +162,7 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-            {!loading && (
-              user ? (
-                <>
-                  <Button variant="ghost" asChild>
-                    <Link href="/admin/dashboard">
-                      <LayoutDashboard className="mr-2 h-4 w-4" />
-                      Dasbor
-                    </Link>
-                  </Button>
-                  <Button variant="outline" onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Logout
-                  </Button>
-                </>
-              ) : (
-                <Button variant="outline" asChild>
-                  <Link href="/admin/login">
-                    <LogIn className="mr-2 h-4 w-4" />
-                    Admin
-                  </Link>
-                </Button>
-              )
-            )}
+            <AuthButtons />
           </nav>
            <div className="md:hidden">
             <Sheet>
@@ -162,35 +206,7 @@ export default function Header() {
                     ))}
                   </div>
                    <div className="p-4 border-t mt-auto space-y-2">
-                    {!loading && (
-                      user ? (
-                        <>
-                          <SheetClose asChild>
-                             <Button variant="secondary" asChild className="w-full">
-                                <Link href="/admin/dashboard">
-                                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                                    Dasbor Admin
-                                </Link>
-                            </Button>
-                          </SheetClose>
-                          <SheetClose asChild>
-                            <Button variant="outline" className="w-full" onClick={handleLogout}>
-                              <LogOut className="mr-2 h-4 w-4" />
-                              Logout
-                            </Button>
-                          </SheetClose>
-                        </>
-                      ) : (
-                        <SheetClose asChild>
-                          <Button variant="outline" asChild className="w-full">
-                              <Link href="/admin/login">
-                                  <LogIn className="mr-2 h-4 w-4" />
-                                  Admin Login
-                              </Link>
-                          </Button>
-                        </SheetClose>
-                      )
-                    )}
+                     <MobileAuthButtons />
                   </div>
                 </div>
               </SheetContent>
