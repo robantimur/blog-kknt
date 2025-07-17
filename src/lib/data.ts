@@ -40,12 +40,12 @@ export const teamMembers: TeamMember[] = [
     imageHint: "student portrait",
   },
   {
-    id: "7",
-    name: "Rezqilla Ashya",
-    major: "Informasi dan Hubungan Masyarakat",
+    id: "9",
+    name: "Victoria Daniel Herdiyanto",
+    major: "Manajemen",
     role: "Sekretaris",
     imageUrl:
-      "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/rezqilla%20ashya.png",
+      "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/Victoria%20Daniel%20Herdiyanto_Kelompok%205.jpg",
     imageHint: "student portrait",
   },
   {
@@ -58,19 +58,10 @@ export const teamMembers: TeamMember[] = [
     imageHint: "student portrait",
   },
   {
-    id: "9",
-    name: "Victoria Daniel Herdiyanto",
-    major: "Manajemen",
-    role: "Divisi Acara",
-    imageUrl:
-      "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/Victoria%20Daniel%20Herdiyanto_Kelompok%205.jpg",
-    imageHint: "student portrait",
-  },
-  {
     id: "2",
     name: "Shafa Rasendriya Nasta",
     major: "Ilmu Perpustakaan dan Informasi",
-    role: "Divisi PDD",
+    role: "Divisi Pubdok",
     imageUrl:
       "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/shafa.png",
     imageHint: "student portrait",
@@ -79,9 +70,27 @@ export const teamMembers: TeamMember[] = [
     id: "5",
     name: "Annisa Nurrizqy Yudenita",
     major: "Teknologi Hasil Perikanan",
-    role: "Divisi PDD",
+    role: "Divisi Pubdok",
     imageUrl:
       "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/annisa.png",
+    imageHint: "student portrait",
+  },
+  {
+    id: "1",
+    name: "Tiara Risma Faza",
+    major: "Psikologi",
+    role: "Divisi Humas",
+    imageUrl:
+      "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/Tiara%20Risma%20Faza_Kelompok%205.jpg",
+    imageHint: "student portrait",
+  },
+  {
+    id: "7",
+    name: "Rezqilla Ashya",
+    major: "Informasi dan Hubungan Masyarakat",
+    role: "Divisi Humas",
+    imageUrl:
+      "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/rezqilla%20ashya.png",
     imageHint: "student portrait",
   },
   {
@@ -91,15 +100,6 @@ export const teamMembers: TeamMember[] = [
     role: "Divisi Perkap",
     imageUrl:
       "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/Gema%20Rigel%20Nursyabana%20Wangi_Kelompok%205.jpg",
-    imageHint: "student portrait",
-  },
-  {
-    id: "1",
-    name: "Tiara Risma Faza",
-    major: "Psikologi",
-    role: "Divisi Konsumsi",
-    imageUrl:
-      "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/Tiara%20Risma%20Faza_Kelompok%205.jpg",
     imageHint: "student portrait",
   },
 ];
