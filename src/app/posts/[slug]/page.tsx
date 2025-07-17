@@ -3,7 +3,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, User } from 'lucide-react';
-import { createClient as createServerClient } from '@/lib/supabase/server';
 import { createClient as createStaticClient } from '@/lib/supabase/static';
 import type { Post } from '@/lib/types';
 import { format } from 'date-fns';
@@ -18,6 +17,25 @@ type PostPageProps = {
     slug: string;
   };
 };
+
+async function getPostBySlug(slug: string): Promise<Post | null> {
+  const supabase = createStaticClient();
+  const { data, error } = await supabase
+      .from('posts')
+      .select('*')
+      .eq('slug', slug)
+      .limit(1)
+      .single();
+
+  if (error || !data) {
+      return null;
+  }
+  
+  return {
+      ...data,
+      date: format(new Date(data.created_at), 'd LLLL yyyy', { locale: id }),
+  } as Post;
+}
 
 // Function to generate dynamic metadata
 export async function generateMetadata(
@@ -53,26 +71,6 @@ export async function generateMetadata(
       ],
     },
   };
-}
-
-
-async function getPostBySlug(slug: string): Promise<Post | null> {
-    const supabase = createServerClient();
-    const { data, error } = await supabase
-        .from('posts')
-        .select('*')
-        .eq('slug', slug)
-        .limit(1)
-        .single();
-
-    if (error || !data) {
-        return null;
-    }
-    
-    return {
-        ...data,
-        date: format(new Date(data.created_at), 'd LLLL yyyy', { locale: id }),
-    } as Post;
 }
 
 export async function generateStaticParams() {
