@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Calendar } from 'lucide-react';
+import { Calendar, User } from 'lucide-react';
 import { createClient as createServerClient } from '@/lib/supabase/server';
 import { createClient as createStaticClient } from '@/lib/supabase/static';
 import type { Post } from '@/lib/types';
@@ -61,14 +61,14 @@ export default async function PostPage({ params }: PostPageProps) {
 
 
   return (
-    <article className="max-w-4xl mx-auto bg-card p-6 sm:p-8 rounded-xl shadow-lg">
+    <article className="max-w-4xl mx-auto bg-card p-4 sm:p-6 md:p-8 rounded-xl shadow-lg">
       <header className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold font-headline text-primary mb-4">{post.title}</h1>
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+        <h1 className="text-3xl md:text-4xl font-bold font-headline text-primary mb-4 break-words">{post.title}</h1>
+        <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-x-6 gap-y-3 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <Avatar className="h-8 w-8">
               <AvatarImage src={post.author_image_url} alt={post.author} />
-              <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
+              <AvatarFallback><User className="h-4 w-4" /></AvatarFallback>
             </Avatar>
             <span>{post.author}</span>
           </div>
@@ -79,12 +79,14 @@ export default async function PostPage({ params }: PostPageProps) {
         </div>
       </header>
 
-      <div className="relative aspect-[16/9] w-full mb-8 rounded-lg overflow-hidden">
-        <Image src={post.image_url} alt={post.title} fill className="object-cover" data-ai-hint={post.image_hint} />
-      </div>
+      {post.image_url && (
+        <div className="relative aspect-[16/9] w-full mb-8 rounded-lg overflow-hidden">
+          <Image src={post.image_url} alt={post.title} fill className="object-cover" data-ai-hint={post.image_hint} />
+        </div>
+      )}
 
       <div
-        className="prose prose-lg dark:prose-invert max-w-none [&>h2]:font-headline [&>h3]:font-headline"
+        className="prose prose-lg dark:prose-invert max-w-none break-words [&>h2]:font-headline [&>h3]:font-headline"
         dangerouslySetInnerHTML={{ __html: post.content }}
       />
       
