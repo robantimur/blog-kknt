@@ -13,8 +13,7 @@ import {
 } from '@/components/ui/table';
 import { PlusCircle, Pencil, Trash2, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { db } from '@/lib/firebase';
-import { collection, query, orderBy, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
+import { createClient } from '@/lib/supabase/client';
 import { useEffect, useState } from 'react';
 import type { Post } from '@/lib/types';
 import { format } from 'date-fns';
@@ -37,43 +36,61 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
   const { toast } = useToast();
+  const supabase = createClient();
 
   useEffect(() => {
-    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const postsData = querySnapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          ...data,
-          date: data.createdAt.toDate().toLocaleDateString('id-ID', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          }),
-        } as Post;
-      });
-      setPosts(postsData);
-      setLoading(false);
-    });
+    const fetchPosts = async () => {
+      const { data, error } = await supabase
+        .from('posts')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-    return () => unsubscribe();
-  }, []);
+      if (error) {
+        toast({
+          variant: 'destructive',
+          title: 'Gagal Memuat Postingan',
+          description: error.message,
+        });
+      } else {
+        const formattedPosts = data.map(post => ({
+          ...post,
+          date: format(new Date(post.created_at), 'd LLLL yyyy', { locale: id }),
+        }))
+        setPosts(formattedPosts);
+      }
+      setLoading(false);
+    };
+
+    fetchPosts();
+
+    const channel = supabase.channel('realtime posts')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'posts' }, (payload) => {
+        fetchPosts();
+    })
+    .subscribe()
+
+    return () => {
+        supabase.removeChannel(channel);
+    };
+
+  }, [supabase, toast]);
 
   const handleDeletePost = async (postId: string, postTitle: string) => {
     setDeleting(true);
     try {
-      await deleteDoc(doc(db, "posts", postId));
+      const { error } = await supabase.from('posts').delete().match({ id: postId });
+      if (error) throw error;
+      
       toast({
         title: 'Sukses',
         description: `Postingan "${postTitle}" telah dihapus.`,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error deleting post: ", error);
       toast({
         variant: 'destructive',
         title: 'Gagal Menghapus',
-        description: 'Terjadi kesalahan saat menghapus postingan.',
+        description: error.message || 'Terjadi kesalahan saat menghapus postingan.',
       });
     } finally {
       setDeleting(false);
@@ -116,7 +133,7 @@ export default function AdminDashboard() {
               <TableRow key={post.id}>
                 <TableCell className="font-medium">{post.title}</TableCell>
                 <TableCell>{post.author}</TableCell>
-                <TableCell>{typeof post.date === 'string' ? post.date : format(post.date.toDate(), 'd LLLL yyyy', { locale: id })}</TableCell>
+                <TableCell>{post.date as string}</TableCell>
                 <TableCell>
                     <div className="flex flex-wrap gap-1">
                         {post.tags.map(tag => <Badge key={tag} variant="secondary" className="capitalize">{tag}</Badge>)}

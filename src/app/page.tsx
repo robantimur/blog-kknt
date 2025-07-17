@@ -1,25 +1,27 @@
 
-import { collection, getDocs, orderBy, query, limit } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { createClient } from '@/lib/supabase/server';
 import type { Post } from '@/lib/types';
 import PostCard from '@/components/post-card';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 
-
 async function getPosts() {
-  const postsCol = collection(db, 'posts');
-  const q = query(postsCol, orderBy('createdAt', 'desc'), limit(6));
-  const postSnapshot = await getDocs(q);
-  const postList = postSnapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        ...data,
-        date: format(data.createdAt.toDate(), 'd LLLL yyyy', { locale: id }),
-      } as Post;
-  });
-  return postList;
+  const supabase = createClient();
+  const { data: posts, error } = await supabase
+    .from('posts')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(6);
+    
+  if (error) {
+    console.error('Error fetching posts:', error);
+    return [];
+  }
+
+  return posts.map(post => ({
+    ...post,
+    date: format(new Date(post.created_at), 'd LLLL yyyy', { locale: id }),
+  })) as Post[];
 }
 
 export default async function Home() {

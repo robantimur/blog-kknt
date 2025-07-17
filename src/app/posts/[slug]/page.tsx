@@ -5,8 +5,7 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Calendar } from 'lucide-react';
-import { collection, query, where, getDocs, limit } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { createClient } from '@/lib/supabase/server';
 import type { Post } from '@/lib/types';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
@@ -18,28 +17,34 @@ type PostPageProps = {
 };
 
 async function getPostBySlug(slug: string): Promise<Post | null> {
-    const postsRef = collection(db, 'posts');
-    const q = query(postsRef, where("slug", "==", slug), limit(1));
-    const querySnapshot = await getDocs(q);
+    const supabase = createClient();
+    const { data, error } = await supabase
+        .from('posts')
+        .select('*')
+        .eq('slug', slug)
+        .limit(1)
+        .single();
 
-    if (querySnapshot.empty) {
+    if (error || !data) {
         return null;
     }
-
-    const doc = querySnapshot.docs[0];
-    const data = doc.data();
+    
     return {
-        id: doc.id,
         ...data,
-        date: format(data.createdAt.toDate(), 'd LLLL yyyy', { locale: id }),
+        date: format(new Date(data.created_at), 'd LLLL yyyy', { locale: id }),
     } as Post;
 }
 
 export async function generateStaticParams() {
-  const postsCol = collection(db, 'posts');
-  const postSnapshot = await getDocs(postsCol);
-  return postSnapshot.docs.map((doc) => ({
-    slug: doc.data().slug,
+  const supabase = createClient();
+  const { data: posts, error } = await supabase.from('posts').select('slug');
+  
+  if (error) {
+    return [];
+  }
+
+  return posts.map((post) => ({
+    slug: post.slug,
   }));
 }
 
@@ -50,8 +55,8 @@ export default async function PostPage({ params }: PostPageProps) {
     notFound();
   }
 
-  const postDate = typeof post.date === 'string' ? post.date : format(post.date.toDate(), 'd LLLL yyyy', { locale: id });
-  const dateTime = typeof post.date === 'string' ? new Date(post.date).toISOString() : post.date.toDate().toISOString();
+  const postDate = post.date as string;
+  const dateTime = new Date(post.created_at).toISOString();
 
 
   return (
@@ -61,7 +66,7 @@ export default async function PostPage({ params }: PostPageProps) {
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <Avatar className="h-8 w-8">
-              <AvatarImage src={post.authorImageUrl} alt={post.author} />
+              <AvatarImage src={post.author_image_url} alt={post.author} />
               <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
             </Avatar>
             <span>{post.author}</span>
@@ -74,7 +79,7 @@ export default async function PostPage({ params }: PostPageProps) {
       </header>
 
       <div className="relative aspect-[16/9] w-full mb-8 rounded-lg overflow-hidden">
-        <Image src={post.imageUrl} alt={post.title} fill className="object-cover" data-ai-hint={post.imageHint} />
+        <Image src={post.image_url} alt={post.title} fill className="object-cover" data-ai-hint={post.image_hint} />
       </div>
 
       <div

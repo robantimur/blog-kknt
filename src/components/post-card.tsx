@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,11 +17,11 @@ export default function PostCard({ post }: PostCardProps) {
         <CardHeader>
           <div className="aspect-[4/3] relative overflow-hidden rounded-t-lg">
             <Image
-              src={post.imageUrl}
+              src={post.image_url}
               alt={post.title}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
-              data-ai-hint={post.imageHint}
+              data-ai-hint={post.image_hint}
             />
           </div>
         </CardHeader>

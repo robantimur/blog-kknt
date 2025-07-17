@@ -2,9 +2,8 @@
 'use client';
 
 import PostForm from '@/components/post-form';
-import { notFound, useRouter } from 'next/navigation';
-import { db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { notFound } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 import { useEffect, useState } from 'react';
 import type { Post } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
@@ -19,28 +18,34 @@ export default function EditPostPage({ params }: EditPostPageProps) {
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
+  const supabase = createClient();
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const postDoc = await getDoc(doc(db, "posts", params.id));
-        if (postDoc.exists()) {
-          const data = postDoc.data();
-          setPost({ id: postDoc.id, ...data } as Post);
+        const { data, error } = await supabase
+          .from('posts')
+          .select('*')
+          .eq('id', params.id)
+          .single();
+
+        if (error) throw error;
+
+        if (data) {
+          setPost(data as Post);
         } else {
           setError("Postingan tidak ditemukan.");
           notFound();
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error(err);
-        setError("Gagal memuat postingan.");
+        setError(err.message || "Gagal memuat postingan.");
       } finally {
         setLoading(false);
       }
     };
     fetchPost();
-  }, [params.id, router]);
+  }, [params.id, supabase]);
 
   if (loading) {
     return (

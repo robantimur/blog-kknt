@@ -19,9 +19,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import type { Post } from '@/lib/types';
-import { db, storage, auth } from '@/lib/firebase';
-import { collection, addDoc, doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { createClient } from '@/lib/supabase/client';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
@@ -43,8 +41,9 @@ type PostFormProps = {
 export default function PostForm({ post }: PostFormProps) {
   const { toast } = useToast();
   const router = useRouter();
+  const supabase = createClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [imagePreview, setImagePreview] = useState<string | null>(post?.imageUrl || null);
+  const [imagePreview, setImagePreview] = useState<string | null>(post?.image_url || null);
 
   const form = useForm<PostFormValues>({
     resolver: zodResolver(postSchema),
@@ -67,21 +66,32 @@ export default function PostForm({ post }: PostFormProps) {
 
   async function onSubmit(values: PostFormValues) {
     setIsSubmitting(true);
-    const currentUser = auth.currentUser;
-    if (!currentUser) {
+    
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+    if (userError || !user) {
         toast({ variant: 'destructive', title: 'Error', description: 'Anda harus login untuk membuat postingan.' });
         setIsSubmitting(false);
         return;
     }
 
     try {
-      let imageUrl = post?.imageUrl || '';
+      let imageUrl = post?.image_url || '';
       const imageFile = values.image?.[0];
 
       if (imageFile) {
-        const storageRef = ref(storage, `posts/${Date.now()}_${imageFile.name}`);
-        const snapshot = await uploadBytes(storageRef, imageFile);
-        imageUrl = await getDownloadURL(snapshot.ref);
+        const filePath = `posts/${Date.now()}_${imageFile.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from('posts')
+          .upload(filePath, imageFile);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('posts')
+          .getPublicUrl(filePath);
+        
+        imageUrl = publicUrl;
       }
       
       if (!imageUrl && !post) {
@@ -92,26 +102,27 @@ export default function PostForm({ post }: PostFormProps) {
 
       const slug = values.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
       const postData = {
+        user_id: user.id,
         title: values.title,
         slug,
         excerpt: values.excerpt,
         content: values.content,
-        tags: values.tags.split(',').map(tag => tag.trim()),
-        imageUrl,
-        author: currentUser.displayName || 'Admin',
-        authorImageUrl: currentUser.photoURL || `https://placehold.co/100x100.png`,
-        createdAt: post ? (post.date as any) : serverTimestamp(),
-        updatedAt: serverTimestamp(),
+        tags: values.tags.split(',').map(tag => tag.trim().toLowerCase()),
+        image_url: imageUrl,
+        author: user.user_metadata?.full_name || user.email || 'Admin',
+        author_image_url: user.user_metadata?.avatar_url || `https://placehold.co/100x100.png`,
       };
 
       if (post) {
-        await setDoc(doc(db, 'posts', post.id), postData, { merge: true });
+        const { error } = await supabase.from('posts').update({ ...postData, updated_at: new Date().toISOString() }).match({ id: post.id });
+        if (error) throw error;
         toast({
           title: 'Postingan Diperbarui',
           description: `Judul: ${values.title}`,
         });
       } else {
-        await addDoc(collection(db, 'posts'), postData);
+        const { error } = await supabase.from('posts').insert(postData);
+        if (error) throw error;
         toast({
           title: 'Postingan Dibuat',
           description: `Judul: ${values.title}`,
@@ -119,13 +130,14 @@ export default function PostForm({ post }: PostFormProps) {
       }
       
       router.push('/admin/dashboard');
+      router.refresh();
 
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error saving post: ", error);
       toast({
         variant: 'destructive',
         title: 'Gagal Menyimpan',
-        description: 'Terjadi kesalahan saat menyimpan postingan.',
+        description: error.message || 'Terjadi kesalahan saat menyimpan postingan.',
       });
     } finally {
       setIsSubmitting(false);

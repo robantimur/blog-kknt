@@ -17,10 +17,8 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
-import { auth } from '@/lib/firebase';
-import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
-import { FirebaseError } from 'firebase/app';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Alamat email tidak valid.' }),
@@ -30,6 +28,7 @@ const loginSchema = z.object({
 export default function LoginPage() {
   const { toast } = useToast();
   const router = useRouter();
+  const supabase = createClient();
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -40,30 +39,32 @@ export default function LoginPage() {
   });
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
-    try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
-      router.push('/admin/dashboard');
-    } catch (error: any) {
-      console.error("Firebase auth error:", error)
+    const { error } = await supabase.auth.signInWithPassword({
+      email: values.email,
+      password: values.password,
+    });
+
+    if (error) {
       toast({
         variant: 'destructive',
         title: 'Login Gagal',
         description: error.message || 'Silakan periksa kembali email dan kata sandi Anda.',
       });
+    } else {
+      router.push('/admin/dashboard');
+      router.refresh(); // To trigger middleware and re-fetch user
     }
   }
   
   async function handleGoogleLogin() {
-    const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-      router.push('/admin/dashboard');
-    } catch (error: any) {
-      if (error instanceof FirebaseError && error.code === 'auth/popup-closed-by-user') {
-        console.log('Login popup closed by user.');
-        return;
-      }
-      console.error("Google sign in error:", error)
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${location.origin}/auth/callback`,
+      },
+    });
+
+    if (error) {
       toast({
         variant: 'destructive',
         title: 'Login Google Gagal',

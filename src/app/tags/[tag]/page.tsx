@@ -2,8 +2,7 @@
 import PostCard from '@/components/post-card';
 import { notFound } from 'next/navigation';
 import { Tag } from 'lucide-react';
-import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { createClient } from '@/lib/supabase/server';
 import type { Post } from '@/lib/types';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
@@ -15,26 +14,35 @@ type TagPageProps = {
 };
 
 async function getPostsByTag(tag: string) {
-  const postsRef = collection(db, 'posts');
-  const q = query(postsRef, where("tags", "array-contains", tag), orderBy("createdAt", "desc"));
-  const querySnapshot = await getDocs(q);
+  const supabase = createClient();
+  const { data: posts, error } = await supabase
+    .from('posts')
+    .select('*')
+    .contains('tags', [tag])
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching posts by tag:', error);
+    return [];
+  }
   
-  const posts = querySnapshot.docs.map(doc => {
-    const data = doc.data();
+  return posts.map(post => {
     return {
-      id: doc.id,
-      ...data,
-      date: format(data.createdAt.toDate(), 'd LLLL yyyy', { locale: id }),
+      ...post,
+      date: format(new Date(post.created_at), 'd LLLL yyyy', { locale: id }),
     } as Post;
   });
-  
-  return posts;
 }
 
 export async function generateStaticParams() {
-  const postsCol = collection(db, 'posts');
-  const postSnapshot = await getDocs(postsCol);
-  const allTags = new Set(postSnapshot.docs.flatMap((doc) => doc.data().tags || []));
+  const supabase = createClient();
+  const { data: posts, error } = await supabase.from('posts').select('tags');
+
+  if (error) {
+    return [];
+  }
+
+  const allTags = new Set(posts.flatMap((post) => post.tags || []));
   return Array.from(allTags).map((tag) => ({
     tag: tag as string,
   }));
