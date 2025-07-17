@@ -17,6 +17,9 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
+import { auth } from '@/lib/firebase';
+import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Alamat email tidak valid.' }),
@@ -25,6 +28,7 @@ const loginSchema = z.object({
 
 export default function LoginPage() {
   const { toast } = useToast();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -34,23 +38,41 @@ export default function LoginPage() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
-    // This is where Firebase authentication logic would go.
-    // For now, we'll just show a success toast.
-    console.log(values);
-    toast({
-      title: 'Login Berhasil (Simulasi)',
-      description: 'Anda akan diarahkan ke dasbor admin.',
-    });
-    // In a real app, you would redirect to /admin/dashboard here.
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
+    try {
+      await signInWithEmailAndPassword(auth, values.email, values.password);
+      toast({
+        title: 'Login Berhasil',
+        description: 'Anda akan diarahkan ke dasbor admin.',
+      });
+      router.push('/admin/dashboard');
+    } catch (error: any) {
+      console.error("Firebase aith error:", error)
+      toast({
+        variant: 'destructive',
+        title: 'Login Gagal',
+        description: error.message || 'Silakan periksa kembali email dan kata sandi Anda.',
+      });
+    }
   }
   
-  function handleGoogleLogin() {
-    // Firebase Google Sign-In logic
-     toast({
-      title: 'Login Google (Simulasi)',
-      description: 'Mencoba masuk dengan akun Google Anda.',
-    });
+  async function handleGoogleLogin() {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+      toast({
+        title: 'Login Google Berhasil',
+        description: 'Anda akan diarahkan ke dasbor admin.',
+      });
+      router.push('/admin/dashboard');
+    } catch (error: any) {
+      console.error("Google sign in error:", error)
+      toast({
+        variant: 'destructive',
+        title: 'Login Google Gagal',
+        description: error.message || 'Gagal masuk dengan Google.',
+      });
+    }
   }
   
   const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
