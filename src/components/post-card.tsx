@@ -15,7 +15,7 @@ export default function PostCard({ post }: PostCardProps) {
     <Link href={`/posts/${post.slug}`} className="group block">
       <Card className="h-full flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
         <CardHeader>
-          <div className="aspect-[4/3] relative overflow-hidden rounded-t-lg">
+          <div className="aspect-[16/9] relative overflow-hidden rounded-t-lg">
             <Image
               src={post.image_url}
               alt={post.title}
