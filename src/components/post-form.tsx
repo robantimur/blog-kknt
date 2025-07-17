@@ -76,7 +76,7 @@ export default function PostForm({ post }: PostFormProps) {
     const { data: { user }, error: userError } = await supabase.auth.getUser();
 
     if (userError || !user) {
-        toast({ variant: 'destructive', title: 'Error', description: 'Anda harus login untuk membuat postingan.' });
+        toast({ variant: 'destructive', title: 'Error', description: 'Anda harus login untuk membuat atau mengedit postingan.' });
         setIsSubmitting(false);
         return;
     }
@@ -107,6 +107,7 @@ export default function PostForm({ post }: PostFormProps) {
       }
 
       const slug = values.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      
       const postData = {
         user_id: user.id,
         title: values.title,
@@ -115,19 +116,26 @@ export default function PostForm({ post }: PostFormProps) {
         content: values.content,
         tags: values.tags.split(',').map(tag => tag.trim().toLowerCase()),
         image_url: imageUrl,
-        author: values.author,
+        author: values.author, // ALWAYS use the value from the form
         author_image_url: post?.author_image_url || `https://placehold.co/100x100.png`,
       };
 
       if (post) {
-        const { error } = await supabase.from('posts').update({ ...postData, updated_at: new Date().toISOString() }).match({ id: post.id });
+        // Update existing post
+        const { error } = await supabase
+          .from('posts')
+          .update({ ...postData, updated_at: new Date().toISOString() })
+          .match({ id: post.id });
         if (error) throw error;
         toast({
           title: 'Postingan Diperbarui',
           description: `Judul: ${values.title}`,
         });
       } else {
-        const { error } = await supabase.from('posts').insert(postData);
+        // Insert new post
+        const { error } = await supabase
+          .from('posts')
+          .insert(postData);
         if (error) throw error;
         toast({
           title: 'Postingan Dibuat',
