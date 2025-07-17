@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BookOpenText, Home, Info, LogIn, Users } from 'lucide-react';
+import { BookOpenText, Home, LogIn, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -40,20 +40,20 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-            <Link href="/admin/login" legacyBehavior passHref>
-              <Button variant="outline">
+            <Button asChild variant="outline">
+              <Link href="/admin/login">
                 <LogIn className="mr-2 h-4 w-4" />
                 Admin
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </nav>
            <div className="md:hidden">
             {/* Mobile menu could be implemented here with a Sheet component */}
-            <Link href="/admin/login" legacyBehavior passHref>
-              <Button variant="ghost" size="icon">
+            <Button asChild variant="ghost" size="icon">
+              <Link href="/admin/login">
                 <LogIn className="h-5 w-5" />
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </div>
         </div>
       </div>

@@ -17,12 +17,12 @@ export default function AdminDashboard() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold font-headline">Dasbor Admin</h1>
-        <Link href="/admin/posts/new" legacyBehavior>
-          <Button>
+        <Button asChild>
+          <Link href="/admin/posts/new">
             <PlusCircle className="mr-2 h-4 w-4" />
             Buat Postingan Baru
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </div>
 
       <div className="bg-card rounded-lg shadow-md">
@@ -49,12 +49,12 @@ export default function AdminDashboard() {
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
-                    <Link href={`/admin/posts/edit/${post.id}`} legacyBehavior>
-                      <Button variant="outline" size="icon">
+                    <Button variant="outline" size="icon" asChild>
+                      <Link href={`/admin/posts/edit/${post.id}`}>
                         <Pencil className="h-4 w-4" />
                         <span className="sr-only">Edit</span>
-                      </Button>
-                    </Link>
+                      </Link>
+                    </Button>
                     <Button variant="destructive" size="icon" onClick={() => alert(`Simulasi hapus post: ${post.title}`)}>
                       <Trash2 className="h-4 w-4" />
                       <span className="sr-only">Hapus</span>

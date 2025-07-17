@@ -57,13 +57,11 @@ export default function PostPage({ params }: PostPageProps) {
           <h3 className="text-lg font-semibold mb-4">Tags</h3>
           <div className="flex flex-wrap gap-2">
             {post.tags.map((tag) => (
-                <Link key={tag} href={`/tags/${tag}`} legacyBehavior>
-                    <a className="block">
-                        <Badge variant="default" className="capitalize transition-colors hover:bg-primary/80">
-                            {tag.replace(/-/g, ' ')}
-                        </Badge>
-                    </a>
-                </Link>
+              <Link key={tag} href={`/tags/${tag}`} passHref>
+                <Badge variant="default" className="capitalize transition-colors hover:bg-primary/80 cursor-pointer">
+                  {tag.replace(/-/g, ' ')}
+                </Badge>
+              </Link>
             ))}
           </div>
       </footer>
