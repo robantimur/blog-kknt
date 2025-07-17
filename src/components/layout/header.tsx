@@ -7,6 +7,9 @@ import { Button } from '@/components/ui/button';
 import {
   Sheet,
   SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
   SheetTrigger,
   SheetClose,
 } from '@/components/ui/sheet';
@@ -116,14 +119,19 @@ export default function Header() {
                   <span className="sr-only">Buka menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[280px]">
+              <SheetContent side="right" className="w-[280px] p-0">
                  <div className="flex flex-col h-full">
-                  <div className="p-4 border-b">
-                    <Link href="/" className="flex items-center gap-2 text-xl font-bold font-headline text-primary">
-                        <BookOpenText className="w-7 h-7" />
-                        <span>KKN Connect</span>
-                    </Link>
-                  </div>
+                  <SheetHeader className="p-4 border-b">
+                    <SheetTitle>
+                      <Link href="/" className="flex items-center gap-2 text-xl font-bold font-headline text-primary">
+                          <BookOpenText className="w-7 h-7" />
+                          <span>KKN Connect</span>
+                      </Link>
+                    </SheetTitle>
+                    <SheetDescription className="sr-only">
+                      Menu navigasi utama. Pilih salah satu link untuk menuju ke halaman yang diinginkan.
+                    </SheetDescription>
+                  </SheetHeader>
                   <div className="flex-grow p-4 space-y-2">
                     {navLinks.map((link) => (
                       <SheetClose key={link.href} asChild>
