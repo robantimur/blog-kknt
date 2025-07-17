@@ -1,29 +1,62 @@
 
+'use client';
+
 import PostForm from '@/components/post-form';
-import { notFound } from 'next/navigation';
-import { createClient } from '@/lib/supabase/server';
+import { notFound, useParams } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 import type { Post } from '@/lib/types';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
 
-type EditPostPageProps = {
-  params: {
-    id: string;
-  };
-};
-
-export default async function EditPostPage({ params }: EditPostPageProps) {
+export default function EditPostPage() {
+  const params = useParams();
+  const { id } = params;
+  const { toast } = useToast();
   const supabase = createClient();
-  
-  const { data: post, error } = await supabase
-    .from('posts')
-    .select('*')
-    .eq('id', params.id)
-    .single();
 
-  if (error || !post) {
-    notFound();
+  const [post, setPost] = useState<Post | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id) return;
+    
+    const fetchPost = async () => {
+      const { data, error } = await supabase
+        .from('posts')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error || !data) {
+        toast({
+          variant: 'destructive',
+          title: 'Gagal Memuat Postingan',
+          description: "Postingan tidak ditemukan atau terjadi kesalahan.",
+        });
+        notFound();
+      } else {
+        setPost(data as Post);
+      }
+      setLoading(false);
+    };
+
+    fetchPost();
+  }, [id, supabase, toast]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin" />
+        <span className="ml-4">Memuat data postingan...</span>
+      </div>
+    );
+  }
+
+  if (!post) {
+     return notFound();
   }
 
   return (
@@ -41,7 +74,7 @@ export default async function EditPostPage({ params }: EditPostPageProps) {
         <p className="mt-2 text-muted-foreground">Perbarui informasi pada postingan Anda.</p>
       </div>
       <div className="bg-card p-4 sm:p-8 rounded-xl shadow-md">
-        <PostForm post={post as Post} />
+        <PostForm post={post} />
       </div>
     </div>
   );
