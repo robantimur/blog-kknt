@@ -10,18 +10,25 @@ export default function AboutPage() {
       <section className="text-center">
         <h1 className="text-4xl md:text-5xl font-bold font-headline text-primary">Tentang Kami</h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          Mengenal lebih dekat Kelompok 5 Tim 1 dan program kerja KKN kami.
+          Mengenal lebih dekat Kelompok 5 Tim 1 dan program kerja KKN Tematik kami.
         </p>
       </section>
 
       <section>
         <Card className="bg-primary/10 border-primary">
           <CardHeader>
-            <CardTitle className="text-2xl font-headline text-primary">Tema KKN</CardTitle>
+            <CardTitle className="text-2xl font-headline text-primary">Tema KKN Tematik</CardTitle>
+            <CardDescription>Implementasi Program Pengabdian Kepada Masyarakat IDBU (Iptek Bagi Daerah Binaan UNDIP)</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-lg">
-              &quot;Pemberdayaan Masyarakat Desa Melalui Inovasi Digital dan Pertanian Berkelanjutan untuk Meningkatkan Kesejahteraan Ekonomi Lokal.&quot;
+            <h3 className="text-lg md:text-xl font-bold mb-2">
+              &quot;Dari Limbah Menjadi Berkah: Penguatan Ekonomi Sirkular di Desa Roban Barat Kabupaten Batang Melalui Produksi Kekerangan di Pesisir Utara Jawa Tengah&quot;
+            </h3>
+            <p className="mt-4 text-muted-foreground">
+              Kegiatan KKN Tematik ini merupakan bagian dari implementasi program pengabdian masyarakat skema IDBU (Iptek Bagi Daerah Binaan UNDIP). Program ini dirancang untuk mendukung penguatan ekonomi sirkular di Desa Roban Barat, Kabupaten Batang, dengan memanfaatkan potensi besar produksi kekerangan.
+            </p>
+            <p className="mt-2 text-muted-foreground">
+              Melalui program ini, mahasiswa berperan aktif mendampingi masyarakat dalam proses pemberdayaan berbasis potensi lokal untuk mengolah limbah kekerangan menjadi produk bernilai tambah seperti pupuk organik, pakan ternak, atau kerajinan. Tujuannya adalah untuk meningkatkan kesejahteraan ekonomi sekaligus menjaga keberlanjutan lingkungan.
             </p>
           </CardContent>
         </Card>
@@ -35,7 +42,7 @@ export default function AboutPage() {
               <CardHeader className="flex-shrink-0">
                   <div className="flex flex-col items-center">
                     <Avatar className="w-24 h-24 mb-4 border-4 border-primary">
-                      <AvatarImage src={dpl.imageUrl} alt={dpl.name} data-ai-hint={dpl.imageHint} />
+                      <AvatarImage src={dpl.imageUrl} alt={dpl.name} data-ai-hint={dpl.imageHint} className="object-contain" />
                       <AvatarFallback>{dpl.name.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <CardTitle className="text-xl font-bold font-headline">{dpl.name}</CardTitle>
@@ -59,7 +66,7 @@ export default function AboutPage() {
             <Card key={member.id} className="text-center transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg">
               <CardContent className="pt-6 flex flex-col items-center">
                 <Avatar className="w-24 h-24 mb-4">
-                  <AvatarImage src={member.imageUrl} alt={member.name} data-ai-hint={member.imageHint} />
+                  <AvatarImage src={member.imageUrl} alt={member.name} data-ai-hint={member.imageHint} className="object-contain"/>
                   <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <h3 className="text-lg font-semibold font-headline">{member.name}</h3>
