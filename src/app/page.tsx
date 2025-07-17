@@ -1,3 +1,24 @@
+import { posts } from '@/lib/data';
+import PostCard from '@/components/post-card';
+
 export default function Home() {
-  return <></>;
+  return (
+    <div className="space-y-12">
+      <section className="text-center">
+        <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight text-primary-foreground bg-primary rounded-lg p-4">Selamat Datang di KKN Connect</h1>
+        <p className="mt-4 text-lg text-muted-foreground">
+          Jelajahi kegiatan dan cerita dari KKN Kelompok 5 Tim 1.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="text-3xl font-bold font-headline mb-8 text-center">Postingan Terbaru</h2>
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {posts.map((post) => (
+            <PostCard key={post.id} post={post} />
+          ))}
+        </div>
+      </section>
+    </div>
+  );
 }
