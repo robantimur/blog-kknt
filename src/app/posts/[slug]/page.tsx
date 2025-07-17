@@ -1,4 +1,3 @@
-
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -79,7 +78,7 @@ export default async function PostPage({ params }: PostPageProps) {
       </header>
 
       {post.image_url && (
-        <div className="relative aspect-[16/9] w-full mb-8 rounded-lg overflow-hidden">
+        <div className="relative aspect-[16/9] w-full mb-8 rounded-lg overflow-hidden bg-muted">
           <Image src={post.image_url} alt={post.title} fill className="object-cover" data-ai-hint={post.image_hint} priority />
         </div>
       )}

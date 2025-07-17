@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,7 +13,7 @@ export default function PostCard({ post }: PostCardProps) {
   return (
     <Link href={`/posts/${post.slug}`} className="group block">
       <Card className="h-full flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-1 overflow-hidden">
-        <div className="aspect-[16/9] relative w-full">
+        <div className="aspect-[16/9] relative w-full bg-muted">
           <Image
             src={post.image_url}
             alt={post.title}

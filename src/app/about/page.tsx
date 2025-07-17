@@ -32,7 +32,7 @@ export default function AboutPage() {
           {dpls.map((dpl) => (
             <Card key={dpl.name} className="w-full max-w-sm text-center">
               <CardContent className="pt-6 flex flex-col items-center">
-                <Avatar className="w-32 h-32 mb-4 border-4 border-primary">
+                <Avatar className="w-28 h-28 mb-4 border-4 border-primary">
                   <AvatarImage src={dpl.imageUrl} alt={dpl.name} data-ai-hint={dpl.imageHint} />
                   <AvatarFallback>{dpl.name.charAt(0)}</AvatarFallback>
                 </Avatar>
