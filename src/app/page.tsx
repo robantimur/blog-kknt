@@ -39,7 +39,7 @@ export default async function Home() {
       <section>
         <h2 className="text-3xl font-bold font-headline mb-8 text-center">Postingan Terbaru</h2>
         {posts.length > 0 ? (
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {posts.map((post) => (
               <PostCard key={post.id} post={post} />
             ))}
