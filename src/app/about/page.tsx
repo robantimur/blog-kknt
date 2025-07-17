@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { dpl, teamMembers } from '@/lib/data';
+import { dpls, teamMembers } from '@/lib/data';
 
 export default function AboutPage() {
   return (
@@ -28,17 +28,19 @@ export default function AboutPage() {
 
       <section>
         <h2 className="text-3xl font-bold font-headline mb-8 text-center">Dosen Pembimbing Lapangan</h2>
-        <div className="flex justify-center">
-          <Card className="w-full max-w-sm text-center">
-            <CardContent className="pt-6 flex flex-col items-center">
-              <Avatar className="w-32 h-32 mb-4 border-4 border-primary">
-                <AvatarImage src={dpl.imageUrl} alt={dpl.name} data-ai-hint={dpl.imageHint} />
-                <AvatarFallback>{dpl.name.charAt(0)}</AvatarFallback>
-              </Avatar>
-              <h3 className="text-xl font-bold font-headline">{dpl.name}</h3>
-              <p className="text-muted-foreground">{dpl.title}</p>
-            </CardContent>
-          </Card>
+        <div className="flex justify-center flex-wrap gap-8">
+          {dpls.map((dpl) => (
+            <Card key={dpl.name} className="w-full max-w-sm text-center">
+              <CardContent className="pt-6 flex flex-col items-center">
+                <Avatar className="w-32 h-32 mb-4 border-4 border-primary">
+                  <AvatarImage src={dpl.imageUrl} alt={dpl.name} data-ai-hint={dpl.imageHint} />
+                  <AvatarFallback>{dpl.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <h3 className="text-xl font-bold font-headline">{dpl.name}</h3>
+                <p className="text-muted-foreground">{dpl.title}</p>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </section>
 
