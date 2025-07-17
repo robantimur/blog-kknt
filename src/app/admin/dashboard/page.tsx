@@ -41,6 +41,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const fetchPosts = async () => {
+      setLoading(true);
       const { data, error } = await supabase
         .from('posts')
         .select('*')
@@ -52,11 +53,12 @@ export default function AdminDashboard() {
           title: 'Gagal Memuat Postingan',
           description: error.message,
         });
+        setPosts([]);
       } else {
         const formattedPosts = data.map(post => ({
           ...post,
           date: format(new Date(post.created_at), 'd LLLL yyyy', { locale: id }),
-        }))
+        }));
         setPosts(formattedPosts);
       }
       setLoading(false);
@@ -68,7 +70,7 @@ export default function AdminDashboard() {
     .on('postgres_changes', { event: '*', schema: 'public', table: 'posts' }, (payload) => {
         fetchPosts();
     })
-    .subscribe()
+    .subscribe();
 
     return () => {
         supabase.removeChannel(channel);

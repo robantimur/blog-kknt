@@ -116,7 +116,7 @@ export default function PostForm({ post }: PostFormProps) {
         content: values.content,
         tags: values.tags.split(',').map(tag => tag.trim().toLowerCase()),
         image_url: imageUrl,
-        author: values.author, // ALWAYS use the value from the form
+        author: values.author,
         author_image_url: post?.author_image_url || `https://placehold.co/100x100.png`,
       };
 
