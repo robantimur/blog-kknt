@@ -20,6 +20,7 @@ import { Separator } from '@/components/ui/separator';
 import { auth } from '@/lib/firebase';
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
+import { FirebaseError } from 'firebase/app';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Alamat email tidak valid.' }),
@@ -41,13 +42,9 @@ export default function LoginPage() {
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     try {
       await signInWithEmailAndPassword(auth, values.email, values.password);
-      toast({
-        title: 'Login Berhasil',
-        description: 'Anda akan diarahkan ke dasbor admin.',
-      });
       router.push('/admin/dashboard');
     } catch (error: any) {
-      console.error("Firebase aith error:", error)
+      console.error("Firebase auth error:", error)
       toast({
         variant: 'destructive',
         title: 'Login Gagal',
@@ -60,12 +57,12 @@ export default function LoginPage() {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-      toast({
-        title: 'Login Google Berhasil',
-        description: 'Anda akan diarahkan ke dasbor admin.',
-      });
       router.push('/admin/dashboard');
     } catch (error: any) {
+      if (error instanceof FirebaseError && error.code === 'auth/popup-closed-by-user') {
+        console.log('Login popup closed by user.');
+        return;
+      }
       console.error("Google sign in error:", error)
       toast({
         variant: 'destructive',
