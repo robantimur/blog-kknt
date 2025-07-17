@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Calendar, User } from 'lucide-react';
 import { createClient as createServerClient } from '@/lib/supabase/server';
 import { createClient as createStaticClient } from '@/lib/supabase/static';
@@ -69,10 +68,7 @@ export default async function PostPage({ params }: PostPageProps) {
         <h1 className="text-3xl md:text-4xl font-bold font-headline text-primary mb-4 break-words">{post.title}</h1>
         <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-x-6 gap-y-3 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={post.author_image_url} alt={post.author} />
-              <AvatarFallback><User className="h-4 w-4" /></AvatarFallback>
-            </Avatar>
+            <User className="h-4 w-4" />
             <span>{post.author}</span>
           </div>
           <div className="flex items-center gap-2">
