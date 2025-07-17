@@ -5,8 +5,8 @@ import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 
 export const metadata: Metadata = {
-  title: 'KKN Connect',
-  description: 'Informasi seputar kegiatan KKN Kelompok 5 Tim 1.',
+  title: 'Roban Berkarya',
+  description: 'Website KKN Tematik Tim 1 Kelompok 5 di Desa Roban Barat.',
   icons: {
     icon: '/favicon.ico',
   }

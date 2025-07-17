@@ -30,7 +30,7 @@ export default async function Home() {
   return (
     <div className="space-y-12">
       <section className="text-center bg-primary text-primary-foreground -mx-4 sm:-mx-6 lg:-mx-8 py-12 px-4">
-        <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight">Selamat Datang di KKN Connect</h1>
+        <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight">Selamat Datang di Roban Berkarya</h1>
         <p className="mt-4 text-lg text-primary-foreground/80 max-w-2xl mx-auto">
           Jelajahi kegiatan dan cerita dari KKN Kelompok 5 Tim 1.
         </p>

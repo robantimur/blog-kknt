@@ -77,7 +77,7 @@ export default function Header() {
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center gap-2 text-xl font-bold font-headline text-primary hover:text-primary/80 transition-colors">
               <BookOpenText className="w-7 h-7" />
-              <span>KKN Connect</span>
+              <span>Roban Berkarya</span>
             </Link>
           </div>
           <nav className="hidden md:flex items-center space-x-4">
@@ -135,7 +135,7 @@ export default function Header() {
                        <SheetClose asChild>
                         <Link href="/" className="flex items-center gap-2 text-xl font-bold font-headline text-primary">
                             <BookOpenText className="w-7 h-7" />
-                            <span>KKN Connect</span>
+                            <span>Roban Berkarya</span>
                         </Link>
                        </SheetClose>
                     </SheetTitle>
