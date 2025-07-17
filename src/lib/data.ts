@@ -26,7 +26,8 @@ export const teamMembers: TeamMember[] = [
     name: "Muhammad Fuad Fakhruzzaki",
     major: "Teknik Komputer",
     role: "Ketua",
-    imageUrl: "https://placehold.co/400x400.png",
+    imageUrl:
+      "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/Muhammad%20Fuad%20Fakhruzzaki_Kelompok%205.PNG",
     imageHint: "student portrait",
   },
   {
@@ -34,7 +35,8 @@ export const teamMembers: TeamMember[] = [
     name: "Akbar Ramadhan Putra Awwala",
     major: "Teknologi Rekayasa Konstruksi Perkapalan",
     role: "Wakil Ketua",
-    imageUrl: "https://placehold.co/400x400.png",
+    imageUrl:
+      "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/Akbar%20Ramadhan_kelompok%205%20.jpg",
     imageHint: "student portrait",
   },
   {
@@ -42,7 +44,8 @@ export const teamMembers: TeamMember[] = [
     name: "Rezqilla Ashya",
     major: "Informasi dan Hubungan Masyarakat",
     role: "Sekretaris",
-    imageUrl: "https://placehold.co/400x400.png",
+    imageUrl:
+      "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/rezqilla%20ashya.png",
     imageHint: "student portrait",
   },
   {
@@ -50,7 +53,8 @@ export const teamMembers: TeamMember[] = [
     name: "Nurul Amirah",
     major: "Kedokteran Gigi",
     role: "Bendahara",
-    imageUrl: "https://placehold.co/400x400.png",
+    imageUrl:
+      "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/Nurul%20Amirah_Kelompok%205_.jpg",
     imageHint: "student portrait",
   },
   {
@@ -58,7 +62,8 @@ export const teamMembers: TeamMember[] = [
     name: "Victoria Daniel Herdiyanto",
     major: "Manajemen",
     role: "Divisi Acara",
-    imageUrl: "https://placehold.co/400x400.png",
+    imageUrl:
+      "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/Victoria%20Daniel%20Herdiyanto_Kelompok%205.jpg",
     imageHint: "student portrait",
   },
   {
@@ -66,7 +71,8 @@ export const teamMembers: TeamMember[] = [
     name: "Shafa Rasendriya Nasta",
     major: "Ilmu Perpustakaan dan Informasi",
     role: "Divisi PDD",
-    imageUrl: "https://placehold.co/400x400.png",
+    imageUrl:
+      "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/shafa.png",
     imageHint: "student portrait",
   },
   {
@@ -74,7 +80,8 @@ export const teamMembers: TeamMember[] = [
     name: "Annisa Nurrizqy Yudenita",
     major: "Teknologi Hasil Perikanan",
     role: "Divisi PDD",
-    imageUrl: "https://placehold.co/400x400.png",
+    imageUrl:
+      "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/annisa.png",
     imageHint: "student portrait",
   },
   {
@@ -82,7 +89,8 @@ export const teamMembers: TeamMember[] = [
     name: "Gema Rigel Nursyabana Wangi",
     major: "Teknik Geologi",
     role: "Divisi Perkap",
-    imageUrl: "https://placehold.co/400x400.png",
+    imageUrl:
+      "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/Gema%20Rigel%20Nursyabana%20Wangi_Kelompok%205.jpg",
     imageHint: "student portrait",
   },
   {
@@ -90,7 +98,8 @@ export const teamMembers: TeamMember[] = [
     name: "Tiara Risma Faza",
     major: "Psikologi",
     role: "Divisi Konsumsi",
-    imageUrl: "https://placehold.co/400x400.png",
+    imageUrl:
+      "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/Tiara%20Risma%20Faza_Kelompok%205.jpg",
     imageHint: "student portrait",
   },
 ];
