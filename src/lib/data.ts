@@ -70,7 +70,7 @@ export const teamMembers: TeamMember[] = [
     id: "2",
     name: "Shafa Rasendriya Nasta",
     major: "Ilmu Perpustakaan dan Informasi",
-    role: "Divisi Pubdok",
+    role: "Pubdok",
     imageUrl:
       "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/shafa.png",
     imageHint: "student portrait",
@@ -79,7 +79,7 @@ export const teamMembers: TeamMember[] = [
     id: "5",
     name: "Annisa Nurrizqy Yudenita",
     major: "Teknologi Hasil Perikanan",
-    role: "Divisi Pubdok",
+    role: "Pubdok",
     imageUrl:
       "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/annisa.png",
     imageHint: "student portrait",
@@ -88,7 +88,7 @@ export const teamMembers: TeamMember[] = [
     id: "1",
     name: "Tiara Risma Faza",
     major: "Psikologi",
-    role: "Divisi Humas",
+    role: "Humas",
     imageUrl:
       "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/Tiara%20Risma%20Faza_Kelompok%205.jpg",
     imageHint: "student portrait",
@@ -97,7 +97,7 @@ export const teamMembers: TeamMember[] = [
     id: "8",
     name: "Gema Rigel Nursyabana Wangi",
     major: "Teknik Geologi",
-    role: "Divisi Perkap",
+    role: "Perkap",
     imageUrl:
       "https://xoyfvbzzxnpvednkctur.supabase.co/storage/v1/object/public/posts/posts/Gema%20Rigel%20Nursyabana%20Wangi_Kelompok%205.jpg",
     imageHint: "student portrait",
