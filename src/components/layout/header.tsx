@@ -1,8 +1,9 @@
+
 'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BookOpenText, Home, LogIn, Users, Menu, LogOut } from 'lucide-react';
+import { BookOpenText, Home, LogIn, Users, Menu, LogOut, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -97,10 +98,18 @@ export default function Header() {
             ))}
             {!loading && (
               user ? (
-                <Button variant="outline" onClick={handleLogout}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Logout
-                </Button>
+                <>
+                  <Button variant="ghost" asChild>
+                    <Link href="/admin/dashboard">
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      Dasbor
+                    </Link>
+                  </Button>
+                  <Button variant="outline" onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Logout
+                  </Button>
+                </>
               ) : (
                 <Button variant="outline" asChild>
                   <Link href="/admin/login">
@@ -123,10 +132,12 @@ export default function Header() {
                  <div className="flex flex-col h-full">
                   <SheetHeader className="p-4 border-b">
                     <SheetTitle>
-                      <Link href="/" className="flex items-center gap-2 text-xl font-bold font-headline text-primary">
-                          <BookOpenText className="w-7 h-7" />
-                          <span>KKN Connect</span>
-                      </Link>
+                       <SheetClose asChild>
+                        <Link href="/" className="flex items-center gap-2 text-xl font-bold font-headline text-primary">
+                            <BookOpenText className="w-7 h-7" />
+                            <span>KKN Connect</span>
+                        </Link>
+                       </SheetClose>
                     </SheetTitle>
                     <SheetDescription className="sr-only">
                       Menu navigasi utama. Pilih salah satu link untuk menuju ke halaman yang diinginkan.
@@ -150,15 +161,25 @@ export default function Header() {
                       </SheetClose>
                     ))}
                   </div>
-                   <div className="p-4 border-t mt-auto">
+                   <div className="p-4 border-t mt-auto space-y-2">
                     {!loading && (
                       user ? (
-                        <SheetClose asChild>
-                          <Button variant="outline" className="w-full" onClick={handleLogout}>
-                            <LogOut className="mr-2 h-4 w-4" />
-                            Logout
-                          </Button>
-                        </SheetClose>
+                        <>
+                          <SheetClose asChild>
+                             <Button variant="secondary" asChild className="w-full">
+                                <Link href="/admin/dashboard">
+                                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                                    Dasbor Admin
+                                </Link>
+                            </Button>
+                          </SheetClose>
+                          <SheetClose asChild>
+                            <Button variant="outline" className="w-full" onClick={handleLogout}>
+                              <LogOut className="mr-2 h-4 w-4" />
+                              Logout
+                            </Button>
+                          </SheetClose>
+                        </>
                       ) : (
                         <SheetClose asChild>
                           <Button variant="outline" asChild className="w-full">
