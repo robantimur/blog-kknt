@@ -10,8 +10,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Plus Jakarta Sans', 'sans-serif'],
-        headline: ['Plus Jakarta Sans', 'sans-serif'],
+        body: ['var(--font-plus-jakarta-sans)', 'sans-serif'],
+        headline: ['var(--font-plus-jakarta-sans)', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {
